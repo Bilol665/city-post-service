@@ -1,2 +1,20 @@
-package uz.pdp.citypostservice.config;public class GlobalExceptionHandler {
+package uz.pdp.citypostservice.config;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import uz.pdp.citypostservice.exceptions.DataNotFound;
+import uz.pdp.citypostservice.exceptions.NotAcceptable;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(value = {NotAcceptable.class})
+    public ResponseEntity<String> notAcceptable(NotAcceptable e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    }
+    @ExceptionHandler(value = {DataNotFound.class})
+    public ResponseEntity<String> dataNotFound(NotAcceptable e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }
