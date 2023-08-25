@@ -2,6 +2,9 @@ package uz.pdp.citypostservice.service.post;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.pdp.citypostservice.domain.dto.PostCreateDto;
@@ -14,6 +17,7 @@ import uz.pdp.citypostservice.repository.post.PostRepository;
 import uz.pdp.citypostservice.service.auth.AuthService;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -53,5 +57,18 @@ public class PostService {
         PostEntity postEntity = postRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Post not found!"));
         postRepository.delete(postEntity);
         return new ApiResponse(HttpStatus.OK,true,"Successfully deleted!");
+    }
+
+    public ApiResponse getAll(int pageSize, int page, String sortBy) {
+        PageRequest pageable = PageRequest.of(page,pageSize, Sort.by(sortBy));
+        Page<PostEntity> all = postRepository.findAll(pageable);
+        return new ApiResponse(HttpStatus.OK,true,"Success",all);
+    }
+
+    public ApiResponse search(String search) {
+        String success = "Success";
+        if(search.isBlank()) success = "Search text is blank!";
+        List<PostEntity> posts = postRepository.findPostEntitiesByNameContainingIgnoreCase(search);
+        return new ApiResponse(HttpStatus.OK,true,success,posts);
     }
 }

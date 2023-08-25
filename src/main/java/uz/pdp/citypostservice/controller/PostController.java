@@ -15,6 +15,20 @@ import java.util.UUID;
 @RequestMapping("/post/api/v1/")
 public class PostController {
     private final PostService postService;
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse> search(
+            @RequestParam(required = false,defaultValue = "") String search
+    ) {
+        return ResponseEntity.ok(postService.search(search));
+    }
+    @GetMapping("/")
+    public ResponseEntity<ApiResponse> getAll(
+            @RequestParam(required = false,defaultValue = "10") int pageSize,
+            @RequestParam(required = false,defaultValue = "0") int page,
+            @RequestParam(required = false,defaultValue = "price") String sortBy
+    ) {
+        return ResponseEntity.ok(postService.getAll(pageSize,page,sortBy));
+    }
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> savePost(
             @RequestBody PostCreateDto postCreateDto,
