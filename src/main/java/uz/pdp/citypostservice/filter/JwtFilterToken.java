@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
 import uz.pdp.citypostservice.domain.entity.response.JwtTokenEntity;
-import uz.pdp.citypostservice.exceptions.NotAcceptable;
+import uz.pdp.citypostservice.exceptions.NotAcceptableException;
 import uz.pdp.citypostservice.repository.token.JwtTokenRepository;
 import uz.pdp.citypostservice.service.auth.AuthenticationService;
 import uz.pdp.citypostservice.service.auth.JwtService;
@@ -38,7 +38,7 @@ public class JwtFilterToken extends OncePerRequestFilter {
         token = token.substring(7);
         Jws<Claims> claimsJws = jwtService.extractToken(token);
         Date expiration = claimsJws.getBody().getExpiration();
-        if(new Date().after(expiration)) throw new NotAcceptable("Expired Access token!");
+        if(new Date().after(expiration)) throw new NotAcceptableException("Expired Access token!");
         authenticationService.Authenticate(claimsJws.getBody(),request);
         jwtTokenRepository.save(JwtTokenEntity.builder().token(token).username(claimsJws.getBody().getSubject()).build());
 
