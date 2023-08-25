@@ -15,7 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import uz.pdp.citypostservice.domain.dto.UserDto;
 import uz.pdp.citypostservice.domain.dto.UserReadDto;
 import uz.pdp.citypostservice.domain.entity.response.JwtTokenEntity;
-import uz.pdp.citypostservice.exceptions.DataNotFound;
+import uz.pdp.citypostservice.exceptions.DataNotFoundException;
 import uz.pdp.citypostservice.repository.token.JwtTokenRepository;
 
 import java.security.Principal;
@@ -41,7 +41,7 @@ public class AuthService implements UserDetailsService {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(userURL + "/api/v1/get/user")
                 .queryParam("username", username);
         HttpHeaders httpHeaders = new HttpHeaders();
-        JwtTokenEntity jwtToken = jwtTokenRepository.findById(principal.getName()).orElseThrow(() -> new DataNotFound("Jwt not found!"));
+        JwtTokenEntity jwtToken = jwtTokenRepository.findById(principal.getName()).orElseThrow(() -> new DataNotFoundException("Jwt not found!"));
         httpHeaders.add("Authorization","Bearer " + jwtToken.getToken());
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
